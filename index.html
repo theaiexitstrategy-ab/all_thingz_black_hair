@@ -931,9 +931,12 @@ footer a.powered {
 
 <script>
 function handleEmail() {
-  const val = document.getElementById('email-in').value;
-  if (!val || !val.includes('@')) { alert('Please enter a valid email.'); return; }
-  // Connect to Make.com / Mailchimp webhook here
+  const val = document.getElementById('email-in').value.trim();
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(val)) { alert('Please enter a valid email.'); return; }
+  fetch('https://bnkoqybkmwtrlorhowyv.supabase.co/functions/v1/capture-lead', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ client_id: 'allthingzblackhair', email: val, lead_source: 'atbh-join-list', notes: 'Joined list from homepage' })
+  }).catch(() => {});
   document.querySelector('.email-form').style.display = 'none';
   document.getElementById('email-success').style.display = 'block';
 }
