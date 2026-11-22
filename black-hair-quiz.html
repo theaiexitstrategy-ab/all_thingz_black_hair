@@ -699,6 +699,36 @@
   }
 
   /* Mobile tweaks */
+  /* Your picks (Amazon affiliate) */
+  .picks-grid { display: grid; gap: 12px; }
+  .pick-item {
+    background: var(--espresso);
+    border: 1px solid rgba(201,147,58,0.2);
+    border-radius: 6px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .pick-item h4 { font-size: 15px; font-weight: 500; color: var(--cream); line-height: 1.35; }
+  .pick-item p { font-size: 13px; color: var(--muted); line-height: 1.6; }
+  .pick-shop {
+    align-self: flex-start;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    color: var(--ink);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 10px 18px;
+    border-radius: 3px;
+  }
+  .pick-shop:hover { filter: brightness(1.08); }
+  .picks-more { display: inline-block; margin-top: 16px; font-size: 14px; color: var(--gold-light); }
+  .picks-disclosure { font-size: 12px; color: var(--muted); margin-top: 12px; line-height: 1.6; }
+  .footer-disclosure { margin-bottom: 8px; }
+
   @media (max-width: 480px) {
     .style-grid { grid-template-columns: 1fr; }
     .email-row { flex-direction: column; }
@@ -721,7 +751,7 @@
       </div>
     </div>
     <button class="start-btn" onclick="startQuiz()">Take the Quiz →</button>
-    <p class="social-proof">🤎 Join thousands of Black women who discovered their signature style</p>
+    <p class="social-proof">🤎 Built for Black women, by a Black-owned brand</p>
 
     <div class="divider"><span>✦</span></div>
 
@@ -796,6 +826,14 @@
       <ul class="tip-list" id="products-list"></ul>
     </div>
 
+    <!-- YOUR PICKS (Amazon affiliate) -->
+    <div class="result-section" id="your-picks">
+      <h3>✦ Your Picks</h3>
+      <div class="picks-grid" id="picks-grid"></div>
+      <a class="picks-more" id="picks-more" href="picks.html">See all picks for every hair personality →</a>
+      <p class="picks-disclosure">As an Amazon Associate I earn from qualifying purchases. I may earn a commission from links, at no extra cost to you.</p>
+    </div>
+
     <div class="result-section">
       <h3>✦ Mistakes to Avoid</h3>
       <ul class="tip-list" id="mistakes-list"></ul>
@@ -818,11 +856,10 @@
     </div>
 
     <!-- UPSELL -->
-    <div class="upsell-card">
+    <div class="upsell-card" id="upsell-card" style="display:none">
       <h3>Want Your Full Custom Hair Routine?</h3>
       <p>Get a step-by-step routine built specifically for your hair type — wash day schedule, styling guide, and product recommendations all in one PDF.</p>
       <div class="upsell-price">
-        <span class="upsell-old">$27</span>
         <span class="upsell-new">$9</span>
       </div>
       <button class="upsell-btn" onclick="alert('Upsell payment flow — connect your Stripe link here!')">Get My Full Routine →</button>
@@ -843,9 +880,11 @@
 
 <footer>
   <!-- © 2026 GoElev8.ai | Aaron Bryant. All rights reserved. Unauthorized use prohibited. -->
+  <p class="footer-disclosure">As an Amazon Associate I earn from qualifying purchases. I may earn a commission from links, at no extra cost to you. · <a href="picks.html">Shop My Picks</a></p>
   Powered by <a href="https://goelev8.ai" target="_blank">GoElev8.ai</a> · Built for Black hair
 </footer>
 
+<script src="picks-data.js"></script>
 <script>
 const questions = [
   {
@@ -1055,7 +1094,33 @@ function showResults() {
     `<li>${s}</li>`
   ).join('');
 
+  renderPicks(r.title);
+
   window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function renderPicks(title) {
+  const block = document.getElementById('your-picks');
+  const persona = (window.ATBH_PICKS || []).find(p => p.title === title);
+  if (!persona) { block.style.display = 'none'; return; }
+  block.style.display = '';
+  const grid = document.getElementById('picks-grid');
+  grid.innerHTML = '';
+  persona.products.forEach(prod => {
+    const card = document.createElement('div');
+    card.className = 'pick-item';
+    const h = document.createElement('h4'); h.textContent = prod.name;
+    const p = document.createElement('p'); p.textContent = prod.why;
+    const a = document.createElement('a');
+    a.className = 'pick-shop';
+    a.textContent = 'Shop on Amazon';
+    a.href = prod.url;
+    a.target = '_blank';
+    a.rel = 'sponsored noopener';
+    card.append(h, p, a);
+    grid.appendChild(card);
+  });
+  document.getElementById('picks-more').href = 'picks.html#' + persona.id;
 }
 
 function submitEmail() {
