@@ -76,6 +76,9 @@ a { color: var(--gold-bright); }
   pointer-events: none;
   z-index: -1;
 }
+.hero-faces { display: flex; justify-content: center; margin-bottom: 22px; }
+.hero-faces img { width: 84px; height: 84px; border-radius: 50%; object-fit: cover; object-position: center 25%; border: 3px solid var(--ink); box-shadow: 0 0 0 1.5px var(--gold); margin: 0 -10px; }
+.hero-faces img:nth-child(2) { width: 104px; height: 104px; position: relative; z-index: 1; margin-top: -10px; }
 .eyebrow {
   display: inline-block;
   font-size: 11px;
@@ -150,6 +153,20 @@ main { max-width: 1100px; margin: 0 auto; padding: 24px 24px 64px; }
   line-height: 1;
 }
 .persona-head h2 .emoji { font-size: 0.75em; margin-left: 6px; }
+.persona-head.has-photo { position: relative; display: block; min-height: 300px; border-radius: 18px; overflow: hidden; isolation: isolate; background: var(--espresso); border: 1px solid rgba(201,148,58,0.2); }
+.persona-photo { position: absolute; top: 0; right: 0; width: 50%; height: 100%; object-fit: cover; object-position: center 38%; z-index: -2; }
+.persona-head.has-photo::after { content: ''; position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg, var(--espresso) 48%, rgba(43,24,16,0.7) 56%, rgba(13,9,5,0.1) 100%); }
+.persona-text { padding: 36px 32px; max-width: 520px; display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
+.persona-line { color: var(--muted); font-size: 15px; }
+#versatile-diva .persona-photo { object-position: center 10%; }
+.jump-avatar { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; object-position: center 25%; margin-right: 8px; vertical-align: middle; border: 1px solid rgba(245,183,50,0.5); }
+.persona-jump a { display: inline-flex; align-items: center; }
+@media (max-width: 600px) {
+  .persona-head.has-photo { min-height: 0; padding-top: 200px; }
+  .persona-photo { width: 100%; height: 240px; }
+  .persona-head.has-photo::after { background: linear-gradient(180deg, rgba(13,9,5,0) 60px, rgba(43,24,16,0.85) 190px, var(--espresso) 240px); }
+  .persona-text { padding: 0 20px 24px; }
+}
 .persona-tag {
   font-size: 11px;
   letter-spacing: 2px;
@@ -254,6 +271,11 @@ footer .footer-copy a { color: var(--gold); text-decoration: none; }
 </nav>
 
 <header class="hero">
+  <div class="hero-faces" aria-hidden="true">
+    <img src="images/photos/hero-braids.webp" alt="" width="420" height="525"/>
+    <img src="images/photos/hero-afro.webp" alt="" width="900" height="1125"/>
+    <img src="images/photos/hero-knots.webp" alt="" width="420" height="525"/>
+  </div>
   <span class="eyebrow">Shop My Picks</span>
   <h1>Picks for Your <span>Hair Personality</span></h1>
   <p>Products matched to each Black Hair Quiz result. Find your persona below, or take the quiz to find out which one you are.</p>
@@ -281,6 +303,7 @@ footer .footer-copy a { color: var(--gold); text-decoration: none; }
     <li><a href="index.html#join">Join the List</a></li>
   </ul>
   <p class="footer-disclosure">As an Amazon Associate I earn from qualifying purchases. I may earn a commission from links, at no extra cost to you.</p>
+  <p class="footer-copy" style="margin-bottom:6px">Lifestyle photos via Pexels. Product links go to Amazon.</p>
   <p class="footer-copy">© 2026 All Thingz Black Hair · allthingzblackhair.com · Powered by <a href="https://goelev8.ai" target="_blank" rel="noopener">GoElev8.ai</a></p>
 </footer>
 
@@ -301,18 +324,41 @@ footer .footer-copy a { color: var(--gold); text-decoration: none; }
   var wrap = document.getElementById('persona-sections');
   wrap.innerHTML = '';
 
+  // Lifestyle photos (Pexels) per persona. Mood only: no Amazon product images.
+  var PHOTOS = {
+    'natural-purist': { src: 'images/photos/persona-natural.webp', alt: 'Smiling woman with a full natural afro outdoors', line: 'Moisture is a lifestyle. Twist-outs, wash-and-gos, and shrinkage worn proudly.' },
+    'protective-queen': { src: 'images/photos/persona-protective.webp', alt: 'Woman in profile with a braided updo', line: 'Low manipulation, long game. Braids, twists, and locs are your armor.' },
+    'bold-trendsetter': { src: 'images/photos/persona-bold.webp', alt: 'Woman with platinum blonde braids', line: "Color, cuts, and creative styles. You don't follow trends, you start them." },
+    'versatile-diva': { src: 'images/photos/persona-versatile.webp', alt: 'Woman with defined shoulder-length curls in a yellow knit', line: 'Curly today, silk-pressed tomorrow. Your hair matches your mood.' }
+  };
+
   picks.forEach(function (p) {
-    var a = el('a', null, p.emoji + ' ' + p.title);
+    var photo = PHOTOS[p.id];
+    var a = el('a', null);
     a.href = '#' + p.id;
+    if (photo) {
+      var av = el('img', 'jump-avatar');
+      av.src = photo.src; av.alt = ''; av.width = 56; av.height = 56;
+      a.appendChild(av);
+    }
+    a.appendChild(document.createTextNode(p.emoji + ' ' + p.title));
     jump.appendChild(a);
 
     var sec = el('section', 'persona');
     sec.id = p.id;
-    var head = el('div', 'persona-head');
+    var head = el('div', 'persona-head' + (photo ? ' has-photo' : ''));
+    if (photo) {
+      var bg = el('img', 'persona-photo');
+      bg.src = photo.src; bg.alt = photo.alt; bg.loading = 'lazy'; bg.width = 720; bg.height = 960;
+      head.appendChild(bg);
+    }
+    var txt = el('div', 'persona-text');
     var h2 = el('h2', null, p.title);
     h2.appendChild(el('span', 'emoji', p.emoji));
-    head.appendChild(h2);
-    head.appendChild(el('span', 'persona-tag', p.products.length + ' picks'));
+    txt.appendChild(h2);
+    if (photo) txt.appendChild(el('p', 'persona-line', photo.line));
+    txt.appendChild(el('span', 'persona-tag', p.products.length + ' picks'));
+    head.appendChild(txt);
     sec.appendChild(head);
 
     var grid = el('div', 'card-grid');
