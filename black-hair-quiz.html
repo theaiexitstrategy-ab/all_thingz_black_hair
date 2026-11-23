@@ -551,6 +551,7 @@ const RESULT_PHOTOS = [
 
 let currentQ = 0;
 let answers = [];
+let choices = []; // option index per question, for the lead's quiz details
 let selectedOption = null;
 let advanceTimer = null;
 
@@ -574,7 +575,7 @@ function beginQuestions() {
   document.getElementById('gate-section').style.display = 'none';
   const qs = document.getElementById('quiz-section');
   qs.style.display = 'block';
-  currentQ = 0; answers = [];
+  currentQ = 0; answers = []; choices = [];
   buildQuestions();
   showQuestion(0);
   scrollTop();
@@ -604,7 +605,17 @@ async function submitGate() {
   try {
     const res = await fetch(ATBH_CAPTURE, {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ client_id: 'allthingzblackhair', full_name: name, email, phone: digits, lead_source: 'atbh-hair-quiz', notes })
+      body: JSON.stringify({
+        client_id: 'allthingzblackhair', full_name: name, email, phone: digits, lead_source: 'atbh-hair-quiz', notes,
+        // Structured attribution + consent (shown on the lead in the portal). The checkbox is the only source of tcpa_consent.
+        utm_source: params.get('utm_source') || undefined,
+        utm_medium: params.get('utm_medium') || undefined,
+        utm_campaign: params.get('utm_campaign') || undefined,
+        utm_content: params.get('utm_content') || undefined,
+        tcpa_consent: sms,
+        consent_text: sms ? ATBH_SMS_CONSENT : undefined,
+        consent_timestamp: sms ? new Date().toISOString() : undefined
+      })
     });
     const data = await res.json().catch(() => ({}));
     leadId = data.id || null;
@@ -696,6 +707,7 @@ function selectOption(qIndex, optIndex, el) {
   el.classList.add('selected');
   selectedOption = optIndex;
   answers[qIndex] = questions[qIndex].scores[optIndex];
+  choices[qIndex] = optIndex;
   document.getElementById('next-btn').classList.add('show');
   // Auto-advance after a beat so the tap registers visually.
   clearTimeout(advanceTimer);
@@ -707,6 +719,7 @@ function nextQuestion() {
   clearTimeout(advanceTimer);
   currentQ++;
   if(currentQ >= questions.length) {
+    sendQuizDetails();
     showPaywall();
   } else {
     showQuestion(currentQ);
@@ -717,6 +730,26 @@ function prevQuestion() {
   if (currentQ === 0) return;
   currentQ--;
   showQuestion(currentQ);
+}
+
+// Short labels for the portal's lead card ("Q1 texture: 4C — tight coils...").
+const DETAIL_KEYS = ['q1_texture','q2_everyday_style','q3_wash_day','q4_holy_grail','q5_hair_goal','q6_heat_styling','q7_new_styles','q8_hair_not_cooperating','q9_inspiration'];
+
+// Adds her persona and answers to the lead she created at the gate.
+// The portal only accepts it when lead id + email match that lead.
+function sendQuizDetails() {
+  const lead = atbhLoad('atbh_lead') || {};
+  if (!lead.leadId || !lead.email) return;
+  const details = { quiz_persona: results[personaIndex()].title, quiz_completed_at: new Date().toISOString() };
+  questions.forEach((q, i) => {
+    if (choices[i] !== undefined) details[DETAIL_KEYS[i]] = q.opts[choices[i]];
+  });
+  try {
+    fetch('https://portal.goelev8.ai/api/external/lead-details', {
+      method: 'POST', keepalive: true, headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ slug: 'allthingzblackhair', lead_id: lead.leadId, email: lead.email, details })
+    }).catch(() => {});
+  } catch (e) { /* never block the quiz */ }
 }
 
 function personaIndex() {
