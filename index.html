@@ -591,6 +591,22 @@ section { padding: 100px 24px; }
 
 .yt-content { }
 
+.ig-screen {
+  text-decoration: none;
+  background: radial-gradient(circle at 30% 110%, rgba(245,216,120,0.25), transparent 55%), linear-gradient(135deg, var(--bark), var(--deep));
+  transition: border-color 0.3s, transform 0.3s;
+}
+.ig-screen:hover { border-color: var(--gold2); transform: translateY(-4px); }
+.ig-handle {
+  position: relative;
+  z-index: 1;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(22px, 3vw, 32px);
+  font-weight: 700;
+  color: var(--gold2);
+  letter-spacing: 1px;
+}
+
 .coming-badge {
   display: inline-block;
   background: rgba(201,135,58,0.12);
@@ -741,6 +757,7 @@ footer a.powered {
   .quiz-cta-content { padding: 40px 24px; }
 }
 </style>
+<script src="analytics.js" defer></script>
 </head>
 <body>
 
@@ -751,7 +768,7 @@ footer a.powered {
     <li><a href="#quiz">Hair Quiz</a></li>
     <li><a href="#affiliate">Recommendations</a></li>
     <li><a href="picks.html">Shop My Picks</a></li>
-    <li><a href="#youtube">YouTube</a></li>
+    <li><a href="https://www.instagram.com/allthingzblackhair/" target="_blank" rel="noopener" data-track="instagram_click">Instagram</a></li>
     <li><a href="#join">Join the List</a></li>
   </ul>
 </nav>
@@ -796,10 +813,10 @@ footer a.powered {
       </div>
       <div class="pillar">
         <span class="pillar-num">03</span>
-        <span class="pillar-icon">🎥</span>
-        <h3>Faceless YouTube Channel</h3>
-        <p>A growing library of tutorials, styling guides, and honest hair education. No face needed — just results. Subscribe and never miss a drop.</p>
-        <span class="pillar-tag">Coming Soon</span>
+        <span class="pillar-icon">📸</span>
+        <h3>Hair Tips on Instagram</h3>
+        <p>Save-worthy carousels on wash day, styling, and honest hair education for 3C–4C hair. Follow <a href="https://www.instagram.com/allthingzblackhair/" target="_blank" rel="noopener" style="color:var(--gold2)" data-track="instagram_click">@allthingzblackhair</a> and never miss a post.</p>
+        <span class="pillar-tag">Live Now</span>
       </div>
     </div>
   </div>
@@ -875,30 +892,30 @@ footer a.powered {
 
 <div class="gold-rule"><div class="gold-rule-diamond"></div></div>
 
-<!-- YOUTUBE -->
-<section id="youtube">
+<!-- INSTAGRAM -->
+<section id="instagram">
   <div class="youtube-section">
     <div class="yt-inner">
       <div class="yt-visual">
-        <div class="yt-screen">
-          <div class="yt-play"></div>
-        </div>
+        <a class="yt-screen ig-screen" href="https://www.instagram.com/allthingzblackhair/" target="_blank" rel="noopener" data-track="instagram_click" aria-label="Open @allthingzblackhair on Instagram">
+          <span class="ig-handle">@allthingzblackhair</span>
+        </a>
         <div class="yt-tags">
           <span class="yt-tag">Wash Day Routines</span>
           <span class="yt-tag">4C Hair Tips</span>
           <span class="yt-tag">Protective Styles</span>
-          <span class="yt-tag">Product Reviews</span>
-          <span class="yt-tag">Growth Journeys</span>
+          <span class="yt-tag">Product Picks</span>
+          <span class="yt-tag">Detangling</span>
           <span class="yt-tag">Scalp Care</span>
         </div>
       </div>
       <div class="yt-content">
-        <div class="coming-badge">✦ Coming Soon</div>
-        <h2 class="section-title">A Faceless Channel<br/><em>Full of Receipts</em></h2>
-        <p class="section-body">No face. No filter. Just real information for Black hair — tutorials, honest product reviews, wash day guides, and styling breakdowns. Subscribe now to be first when we drop.</p>
+        <div class="coming-badge">✦ Live on Instagram</div>
+        <h2 class="section-title">Hair Tips, Right<br/><em>in Your Feed</em></h2>
+        <p class="section-body">Carousels on wash day, 4C care, protective styles, and the products we actually reach for. Save them, share them with your girls, and pull them up on wash day.</p>
         <div style="margin-top:36px;display:flex;gap:16px;flex-wrap:wrap;">
-          <a href="#join" class="btn-primary">Notify Me When Live</a>
-          <a href="#join" class="btn-ghost">Join the List</a>
+          <a href="https://www.instagram.com/allthingzblackhair/" target="_blank" rel="noopener" class="btn-primary" data-track="instagram_click">Follow @allthingzblackhair</a>
+          <a href="black-hair-quiz.html" class="btn-ghost">Take the Hair Quiz</a>
         </div>
       </div>
     </div>
@@ -912,7 +929,7 @@ footer a.powered {
   <div class="email-inner">
     <span class="section-label">Stay Connected</span>
     <h2 class="section-title">Get First Access<br/><em>to Everything</em></h2>
-    <p class="section-body" style="margin:0 auto;text-align:center">New quizzes, exclusive product deals, YouTube drops, and hair tips delivered straight to you. No spam — just content made for your crown.</p>
+    <p class="section-body" style="margin:0 auto;text-align:center">New quizzes, product deals, and hair tips delivered straight to you. No spam — just content made for your crown.</p>
     <div class="email-form">
       <input type="email" id="email-in" placeholder="Your email address"/>
       <button onclick="handleEmail()">Join the List</button>
@@ -929,7 +946,7 @@ footer a.powered {
     <li><a href="#quiz">Hair Quiz</a></li>
     <li><a href="#affiliate">Recommendations</a></li>
     <li><a href="picks.html">Shop My Picks</a></li>
-    <li><a href="#youtube">YouTube</a></li>
+    <li><a href="https://www.instagram.com/allthingzblackhair/" target="_blank" rel="noopener" data-track="instagram_click">Instagram</a></li>
     <li><a href="#join">Join the List</a></li>
     <li><a href="#">Privacy Policy</a></li>
   </ul>
@@ -945,6 +962,7 @@ function handleEmail() {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ client_id: 'allthingzblackhair', email: val, lead_source: 'atbh-join-list', notes: 'Joined list from homepage' })
   }).catch(() => {});
+  if (window.atbhTrack) window.atbhTrack('generate_lead', { lead_source: 'atbh-join-list' });
   document.querySelector('.email-form').style.display = 'none';
   document.getElementById('email-success').style.display = 'block';
 }
