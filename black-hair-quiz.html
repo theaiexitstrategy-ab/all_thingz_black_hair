@@ -745,6 +745,7 @@
     .paywall-card { padding: 32px 20px; }
   }
 </style>
+<script src="analytics.js" defer></script>
 </head>
 <body>
 
@@ -1007,7 +1008,10 @@ const ATBH_CAPTURE = 'https://bnkoqybkmwtrlorhowyv.supabase.co/functions/v1/capt
 const ATBH_SMS_CONSENT = 'I agree to receive hair tips and offers by text from All Thingz Black Hair (FN Services LLC d/b/a GoElev8.ai). Msg & data rates may apply. Msg frequency varies. Reply STOP to opt out, HELP for help. Consent is not required to take the quiz.';
 let atbhLead = null;
 
+function atbhEvent(name, params) { try { if (window.atbhTrack) window.atbhTrack(name, params); } catch (e) {} }
+
 function startQuiz() {
+  atbhEvent('quiz_start');
   document.getElementById('hero-section').style.display = 'none';
   if (atbhLoad('atbh_lead')) { beginQuestions(); return; }
   document.getElementById('gate-section').style.display = 'block';
@@ -1037,6 +1041,7 @@ async function submitGate() {
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { err.textContent = 'Please enter a valid email.'; return; }
   if (digits.length < 10 || digits.length > 11) { err.textContent = 'Please enter a valid mobile number.'; return; }
   err.textContent = '';
+  atbhEvent('generate_lead', { lead_source: 'atbh-hair-quiz', sms_consent: sms ? 'yes' : 'no' });
   const btn = document.getElementById('gate-btn');
   btn.disabled = true; btn.textContent = 'One sec...';
   const params = new URLSearchParams(location.search);
@@ -1062,6 +1067,7 @@ function startCheckout() {
   const url = new URL(ATBH_PAY_LINK);
   if (lead.email) url.searchParams.set('prefilled_email', lead.email);
   if (lead.leadId) url.searchParams.set('client_reference_id', lead.leadId);
+  atbhEvent('begin_checkout', { currency: 'USD', value: 1, item_name: 'Hair quiz results unlock' });
   const btn = document.querySelector('.pay-btn');
   btn.textContent = 'Opening secure checkout...'; btn.disabled = true;
   location.href = url.toString();
@@ -1070,7 +1076,14 @@ function startCheckout() {
 // Returning from Stripe Checkout
 (function atbhReturn() {
   const sid = new URLSearchParams(location.search).get('session_id');
-  if (sid && /^cs_(live|test)_/.test(sid)) atbhSave('atbh_unlocked', sid);
+  if (sid && /^cs_(live|test)_/.test(sid)) {
+    atbhSave('atbh_unlocked', sid);
+    // Count each checkout session once, even if the page is reloaded.
+    if (atbhLoad('atbh_purchase_tracked') !== sid) {
+      atbhSave('atbh_purchase_tracked', sid);
+      document.addEventListener('DOMContentLoaded', () => atbhEvent('purchase', { transaction_id: sid, currency: 'USD', value: 1, item_name: 'Hair quiz results unlock' }));
+    }
+  }
   if (!atbhLoad('atbh_unlocked')) return;
   const saved = atbhLoad('atbh_answers');
   if (sid && Array.isArray(saved) && saved.length === questions.length) {
@@ -1147,6 +1160,7 @@ function showPaywall() {
   document.getElementById('quiz-section').style.display = 'none';
   if (atbhLoad('atbh_unlocked')) { atbhSave('atbh_answers', answers); showResults(); return; }
   document.getElementById('paywall-section').style.display = 'block';
+  atbhEvent('quiz_paywall_view');
 }
 
 function showResults() {
@@ -1162,6 +1176,7 @@ function showResults() {
   else typeIndex = 3;
 
   const r = results[typeIndex];
+  atbhEvent('quiz_complete', { persona: r.title });
   document.getElementById('result-emoji').textContent = r.emoji;
   document.getElementById('result-title').textContent = r.title;
   document.getElementById('result-desc').textContent = r.desc;
@@ -1205,6 +1220,9 @@ function renderPicks(title) {
     a.href = prod.url;
     a.target = '_blank';
     a.rel = 'sponsored noopener';
+    a.setAttribute('data-product', prod.name);
+    a.setAttribute('data-persona', persona.title);
+    a.setAttribute('data-placement', 'quiz-results');
     card.append(h, p, a);
     grid.appendChild(card);
   });

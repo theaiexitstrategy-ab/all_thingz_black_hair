@@ -240,6 +240,7 @@ footer .footer-copy a { color: var(--gold); text-decoration: none; }
   .hero { padding-top: 32px; }
 }
 </style>
+<script src="analytics.js" defer></script>
 </head>
 <body>
 
@@ -323,6 +324,9 @@ footer .footer-copy a { color: var(--gold); text-decoration: none; }
       btn.href = prod.url;
       btn.target = '_blank';
       btn.rel = 'sponsored noopener';
+      btn.setAttribute('data-product', prod.name);
+      btn.setAttribute('data-persona', p.title);
+      btn.setAttribute('data-placement', 'picks-page');
       card.appendChild(btn);
       grid.appendChild(card);
     });
