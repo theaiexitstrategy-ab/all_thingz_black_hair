@@ -58,6 +58,6 @@
       return;
     }
     var name = a.getAttribute('data-track');
-    if (name) window.atbhTrack(name, { placement: location.pathname, link_url: href });
+    if (name) window.atbhTrack(name, { placement: a.getAttribute('data-placement') || location.pathname, link_url: href });
   }, true);
 })();
