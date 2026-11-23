@@ -330,6 +330,16 @@
   .next-btn.show { display: inline-block; }
 
   /* PAYWALL */
+  #gate-section { display: none; }
+  .gate-card { background: var(--card, #1a120c); border: 1px solid rgba(201,148,58,.35); border-radius: 20px; padding: 36px 28px; text-align: center; }
+  .gate-card h2 { font-family: 'Playfair Display', serif; font-size: 28px; color: var(--gold-light, #f5b732); margin-bottom: 10px; }
+  .gate-card p.sub { color: var(--muted, #b8a89a); font-size: 14px; margin-bottom: 22px; }
+  .gate-field { width: 100%; padding: 14px 16px; margin-bottom: 12px; border-radius: 12px; border: 1px solid rgba(201,148,58,.35); background: rgba(255,255,255,.04); color: inherit; font: inherit; font-size: 16px; box-sizing: border-box; }
+  .gate-field:focus { outline: none; border-color: var(--gold, #c9943a); }
+  .gate-consent { display: flex; gap: 10px; align-items: flex-start; text-align: left; font-size: 11.5px; line-height: 1.5; color: var(--muted, #b8a89a); margin: 6px 0 18px; }
+  .gate-consent input { margin-top: 3px; flex-shrink: 0; }
+  .gate-error { color: #ff8a7a; font-size: 13px; min-height: 18px; margin-bottom: 8px; }
+  .gate-legal { font-size: 11px; color: var(--muted, #b8a89a); margin-top: 14px; }
   #paywall-section {
     display: none;
     text-align: center;
@@ -771,6 +781,21 @@
     </div>
   </section>
 
+  <!-- CONTACT GATE -->
+  <section id="gate-section">
+    <div class="gate-card">
+      <h2>Let's Get Started 🤎</h2>
+      <p class="sub">Tell us where to reach you, then take the 9-question quiz.</p>
+      <input class="gate-field" id="gate-name" type="text" autocomplete="name" placeholder="First & last name"/>
+      <input class="gate-field" id="gate-email" type="email" autocomplete="email" placeholder="Email address"/>
+      <input class="gate-field" id="gate-phone" type="tel" autocomplete="tel" placeholder="Mobile number"/>
+      <label class="gate-consent"><input type="checkbox" id="gate-sms"/><span>I agree to receive hair tips and offers by text from All Thingz Black Hair (FN Services LLC d/b/a GoElev8.ai). Msg & data rates may apply. Msg frequency varies. Reply STOP to opt out, HELP for help. Consent is not required to take the quiz.</span></label>
+      <div class="gate-error" id="gate-error"></div>
+      <button class="start-btn" id="gate-btn" onclick="submitGate()">Start My Quiz →</button>
+      <p class="gate-legal">We never sell your info. <a href="index.html#privacy" style="color:inherit">Privacy</a></p>
+    </div>
+  </section>
+
   <!-- QUIZ -->
   <section id="quiz-section">
     <div class="progress-wrap">
@@ -802,7 +827,7 @@
         <div class="get-item"><span>✦</span><span>Your scalp care essentials</span></div>
       </div>
 
-      <button class="pay-btn" onclick="simulatePayment()">🔒 Unlock My Results — $1.00</button>
+      <button class="pay-btn" onclick="startCheckout()">🔒 Unlock My Results — $1.00</button>
       <p class="secure-note">🔒 Secure payment · Instant access · No subscription</p>
     </div>
   </section>
@@ -845,7 +870,7 @@
     </div>
 
     <!-- EMAIL CAPTURE -->
-    <div class="email-capture">
+    <div class="email-capture" style="display:none">
       <h4>Get Weekly Hair Tips for Your Type 🤎</h4>
       <p>Free. No spam. Just tips made for Black hair.</p>
       <div class="email-row">
@@ -977,13 +1002,86 @@ let currentQ = 0;
 let answers = [];
 let selectedOption = null;
 
+const ATBH_PAY_LINK = 'https://buy.stripe.com/5kQ4gzgD2bDw8lz8Fl8IU0i';
+const ATBH_CAPTURE = 'https://bnkoqybkmwtrlorhowyv.supabase.co/functions/v1/capture-lead';
+const ATBH_SMS_CONSENT = 'I agree to receive hair tips and offers by text from All Thingz Black Hair (FN Services LLC d/b/a GoElev8.ai). Msg & data rates may apply. Msg frequency varies. Reply STOP to opt out, HELP for help. Consent is not required to take the quiz.';
+let atbhLead = null;
+
 function startQuiz() {
   document.getElementById('hero-section').style.display = 'none';
+  if (atbhLoad('atbh_lead')) { beginQuestions(); return; }
+  document.getElementById('gate-section').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function beginQuestions() {
+  document.getElementById('gate-section').style.display = 'none';
   const qs = document.getElementById('quiz-section');
   qs.style.display = 'block';
+  currentQ = 0; answers = [];
   buildQuestions();
   showQuestion(0);
 }
+
+function atbhSave(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+function atbhLoad(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } }
+
+async function submitGate() {
+  const name = document.getElementById('gate-name').value.trim();
+  const email = document.getElementById('gate-email').value.trim();
+  const phone = document.getElementById('gate-phone').value.trim();
+  const sms = document.getElementById('gate-sms').checked;
+  const err = document.getElementById('gate-error');
+  const digits = phone.replace(/\D/g, '');
+  if (name.length < 2) { err.textContent = 'Please enter your name.'; return; }
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { err.textContent = 'Please enter a valid email.'; return; }
+  if (digits.length < 10 || digits.length > 11) { err.textContent = 'Please enter a valid mobile number.'; return; }
+  err.textContent = '';
+  const btn = document.getElementById('gate-btn');
+  btn.disabled = true; btn.textContent = 'One sec...';
+  const params = new URLSearchParams(location.search);
+  const utm = ['utm_source','utm_medium','utm_campaign'].map(k => params.get(k) ? k + '=' + params.get(k) : null).filter(Boolean).join(' ');
+  const notes = 'Hair quiz started. SMS consent: ' + (sms ? 'YES — "' + ATBH_SMS_CONSENT + '"' : 'no') + (utm ? ' | ' + utm : '');
+  let leadId = null;
+  try {
+    const res = await fetch(ATBH_CAPTURE, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ client_id: 'allthingzblackhair', full_name: name, email, phone: digits, lead_source: 'atbh-hair-quiz', notes })
+    });
+    const data = await res.json().catch(() => ({}));
+    leadId = data.id || null;
+  } catch (e) { /* never block the quiz on a network hiccup */ }
+  atbhLead = { name, email, leadId };
+  atbhSave('atbh_lead', atbhLead);
+  beginQuestions();
+}
+
+function startCheckout() {
+  atbhSave('atbh_answers', answers);
+  const lead = atbhLoad('atbh_lead') || {};
+  const url = new URL(ATBH_PAY_LINK);
+  if (lead.email) url.searchParams.set('prefilled_email', lead.email);
+  if (lead.leadId) url.searchParams.set('client_reference_id', lead.leadId);
+  const btn = document.querySelector('.pay-btn');
+  btn.textContent = 'Opening secure checkout...'; btn.disabled = true;
+  location.href = url.toString();
+}
+
+// Returning from Stripe Checkout
+(function atbhReturn() {
+  const sid = new URLSearchParams(location.search).get('session_id');
+  if (sid && /^cs_(live|test)_/.test(sid)) atbhSave('atbh_unlocked', sid);
+  if (!atbhLoad('atbh_unlocked')) return;
+  const saved = atbhLoad('atbh_answers');
+  if (sid && Array.isArray(saved) && saved.length === questions.length) {
+    answers = saved;
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('hero-section').style.display = 'none';
+      showResults();
+    });
+    history.replaceState(null, '', location.pathname);
+  }
+})();
 
 function buildQuestions() {
   const wrap = document.getElementById('questions-wrap');
@@ -1047,18 +1145,8 @@ function nextQuestion() {
 
 function showPaywall() {
   document.getElementById('quiz-section').style.display = 'none';
+  if (atbhLoad('atbh_unlocked')) { atbhSave('atbh_answers', answers); showResults(); return; }
   document.getElementById('paywall-section').style.display = 'block';
-}
-
-function simulatePayment() {
-  // Connect your Stripe payment link here
-  // After successful payment, call showResults()
-  const btn = document.querySelector('.pay-btn');
-  btn.textContent = 'Processing...';
-  btn.disabled = true;
-  setTimeout(() => {
-    showResults();
-  }, 1200);
 }
 
 function showResults() {
