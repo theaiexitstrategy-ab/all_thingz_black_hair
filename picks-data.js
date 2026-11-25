@@ -21,7 +21,6 @@ window.ATBH_PICKS = [
     title: 'The Protective Queen',
     emoji: '👑',
     products: [
-      { name: 'LOC Braid Gel, Extreme Hold (16 oz)', why: 'Strong hold for cornrows and twists, so parts stay neat and sections stay smooth.', url: 'https://www.amazon.com/dp/B0C5S2JC1Y?tag=atbh-20' },
       { name: 'Dr. Girls Lock & Twists Braiding Gel, Biotin & Castor Oil (9.8 oz)', why: 'Braiding gel for locs, twists and braids that holds without a stiff, crunchy finish.', url: 'https://www.amazon.com/dp/B0CTPNR86L?tag=atbh-20' },
       { name: 'Dolahair Hair Wax Stick', why: 'Swipe-on wax for flyaways along the hairline and parts. Easy to keep in your bag.', url: 'https://www.amazon.com/dp/B0B1DB76T4?tag=atbh-20' }
     ]
