@@ -46,12 +46,17 @@
     var a = ev.target && ev.target.closest ? ev.target.closest('a') : null;
     if (!a) return;
     var href = a.getAttribute('href') || '';
-    if (/amazon\.com\//i.test(href)) {
-      var asin = (href.match(/\/dp\/([A-Z0-9]{10})/i) || [])[1] || '';
+    // Full amazon.com links plus SiteStripe short links (amzn.to, a.co).
+    var host = '';
+    try { host = new URL(href, location.href).hostname.toLowerCase(); } catch (e) {}
+    if (/(^|\.)amazon\.com$/.test(host) || host === 'amzn.to' || host === 'a.co') {
+      var product = a.getAttribute('data-product') || '';
+      // Short links carry no /dp/ASIN, so fall back to the product name.
+      var asin = (href.match(/\/(?:dp|gp\/product)\/([A-Z0-9]{10})/i) || [])[1] || '';
       window.atbhTrack('affiliate_click', {
         program: 'amazon',
-        item_id: asin,
-        item_name: a.getAttribute('data-product') || '',
+        item_id: asin || product,
+        item_name: product,
         persona: a.getAttribute('data-persona') || '',
         placement: a.getAttribute('data-placement') || location.pathname
       });
