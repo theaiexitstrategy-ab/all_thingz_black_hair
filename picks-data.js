@@ -5,6 +5,17 @@
    no growth, repair or other label claims. */
 window.ATBH_DISCLOSURE = 'As an Amazon Associate I earn from qualifying purchases. I may earn a commission from links, at no extra cost to you.';
 
+/* Fill every disclosure slot ([data-atbh-disclosure]) from the one string above,
+   so the wording can't drift between pages. */
+(function () {
+  function fill() {
+    var els = document.querySelectorAll('[data-atbh-disclosure]');
+    for (var i = 0; i < els.length; i++) els[i].textContent = window.ATBH_DISCLOSURE;
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fill);
+  else fill();
+})();
+
 window.ATBH_PICKS = [
   {
     id: 'natural-purist',

@@ -281,7 +281,7 @@ footer .footer-copy a { color: var(--gold); text-decoration: none; }
   <h1>Picks for Your <span>Hair Personality</span></h1>
   <p>Products we actually use, matched to each Black Hair Quiz result. Find your persona below, or take the quiz to find out which one you are.</p>
   <div class="persona-jump" id="persona-jump"></div>
-  <p class="disclosure" id="top-disclosure"></p>
+  <p class="disclosure" id="top-disclosure" data-atbh-disclosure></p>
 </header>
 
 <main>
@@ -303,7 +303,7 @@ footer .footer-copy a { color: var(--gold); text-decoration: none; }
     <li><a href="picks.html">Shop My Picks</a></li>
     <li><a href="index.html#join">Join the List</a></li>
   </ul>
-  <p class="footer-disclosure">As an Amazon Associate I earn from qualifying purchases. I may earn a commission from links, at no extra cost to you.</p>
+  <p class="footer-disclosure" data-atbh-disclosure></p>
   <p class="footer-copy" style="margin-bottom:6px">Lifestyle photos via Pexels. Product links go to Amazon.</p>
   <p class="footer-copy">© 2026 All Thingz Black Hair · allthingzblackhair.com · Powered by <a href="https://goelev8.ai" target="_blank" rel="noopener">GoElev8.ai</a></p>
 </footer>
@@ -312,7 +312,6 @@ footer .footer-copy a { color: var(--gold); text-decoration: none; }
 <script>
 (function () {
   var picks = window.ATBH_PICKS || [];
-  document.getElementById('top-disclosure').textContent = window.ATBH_DISCLOSURE || '';
 
   function el(tag, cls, text) {
     var n = document.createElement(tag);

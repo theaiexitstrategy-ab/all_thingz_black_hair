@@ -205,7 +205,7 @@ h1, h2, h3 { font-family: var(--display); font-weight: 400; letter-spacing: 0.5p
 .pick-shop:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(245,183,50,0.3); }
 .picks-more { display: inline-block; margin-top: 18px; font-size: 14px; font-weight: 600; color: var(--gold-bright); text-decoration: none; }
 .picks-more:hover { text-decoration: underline; text-underline-offset: 3px; }
-.picks-disclosure { font-size: 12px; color: var(--muted); margin-top: 10px; line-height: 1.6; }
+.picks-disclosure { font-size: 12px; color: var(--muted); margin: 0 0 14px; line-height: 1.6; }
 
 .share-band { margin-top: clamp(40px, 6vw, 64px); border-radius: 24px; overflow: hidden; position: relative; isolation: isolate; padding: clamp(32px, 5vw, 56px); text-align: center; background: var(--bark); border: 1px solid var(--line); }
 .share-band img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 30%; z-index: -2; filter: sepia(0.3) brightness(0.55); }
@@ -396,9 +396,9 @@ footer .legal a { color: var(--gold); text-decoration: none; }
           <h3><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f5b732" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7h12l-1 13H7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg></span>Your Picks</h3>
           <p>Products I'd reach for with your hair personality.</p>
         </div>
+        <p class="picks-disclosure" id="picks-disclosure" data-atbh-disclosure></p>
         <div class="picks-grid" id="picks-grid"></div>
         <a class="picks-more" id="picks-more" href="picks.html">See all picks for every hair personality →</a>
-        <p class="picks-disclosure">As an Amazon Associate I earn from qualifying purchases. I may earn a commission from links, at no extra cost to you.</p>
       </div>
 
       <div class="result-section wide">
@@ -446,7 +446,7 @@ footer .legal a { color: var(--gold); text-decoration: none; }
       </ul>
     </div>
     <div class="legal">
-      <p class="footer-disclosure">As an Amazon Associate I earn from qualifying purchases. I may earn a commission from links, at no extra cost to you.</p>
+      <p class="footer-disclosure" data-atbh-disclosure></p>
       <p>Hair care info here is general education, not medical advice. For hair loss or scalp conditions, see a dermatologist. Photos via Pexels.</p>
       <p>© 2026 All Thingz Black Hair · Powered by <a href="https://goelev8.ai" target="_blank" rel="noopener">GoElev8.ai</a></p>
     </div>
