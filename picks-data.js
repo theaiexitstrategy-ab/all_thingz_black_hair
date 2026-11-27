@@ -23,7 +23,7 @@ window.ATBH_PICKS = [
     emoji: '🌿',
     products: [
       { name: 'CurlyKids Super Detangle Spray (6 oz)', why: 'Spray on before you comb through. Made for curly, kinky and coily textures, and gentle enough for the kids too.', url: 'https://www.amazon.com/dp/B00J222BFE?tag=atbh-20' },
-      { name: 'Suave Micellar Infusion 2-in-1 Shampoo & Conditioner', why: 'A simple, budget wash for in-between days when you want clean hair without a full wash-day routine.', url: 'https://www.amazon.com/dp/B09DD8XHGN?tag=atbh-20' },
+      { name: 'Suave Micellar Infusion 2-in-1 Shampoo & Conditioner (28 oz)', why: 'A simple, budget wash for in-between days when you want clean hair without a full wash-day routine.', url: 'https://www.amazon.com/dp/B0FPPJSGR2?tag=atbh-20' },
       { name: 'Blue Magic Conditioner Hair Dress, Original (12 oz)', why: 'The classic jar. A little goes a long way on the scalp and ends between wash days.', url: 'https://www.amazon.com/dp/B00R4G5COW?tag=atbh-20' }
     ]
   },
@@ -33,7 +33,7 @@ window.ATBH_PICKS = [
     emoji: '👑',
     products: [
       { name: 'Dr. Girls Lock & Twists Braiding Gel, Biotin & Castor Oil (9.8 oz)', why: 'Braiding gel for locs, twists and braids that holds without a stiff, crunchy finish.', url: 'https://www.amazon.com/dp/B0CTPNR86L?tag=atbh-20' },
-      { name: 'Dolahair Hair Wax Stick', why: 'Swipe-on wax for flyaways along the hairline and parts. Easy to keep in your bag.', url: 'https://www.amazon.com/dp/B0B1DB76T4?tag=atbh-20' }
+      { name: 'Dolahair Hair Wax Stick', why: 'Swipe-on wax for flyaways along the hairline and parts. Easy to keep in your bag.', url: 'https://www.amazon.com/dp/B0BRC8T39V?tag=atbh-20' }
     ]
   },
   {
@@ -52,7 +52,7 @@ window.ATBH_PICKS = [
     emoji: '✨',
     products: [
       { name: 'Lottabody Wrap Me Foaming Mousse, Coconut & Shea (7 oz)', why: 'Light foam for wrap sets, roller sets and soft curls when you switch it up.', url: 'https://www.amazon.com/dp/B000TG63EW?tag=atbh-20' },
-      { name: 'Dolahair Hair Wax Stick', why: 'Smooths flyaways on sleek looks, from a slick bun to a fresh press.', url: 'https://www.amazon.com/dp/B0B1DB76T4?tag=atbh-20' },
+      { name: 'Dolahair Hair Wax Stick', why: 'Smooths flyaways on sleek looks, from a slick bun to a fresh press.', url: 'https://www.amazon.com/dp/B0BRC8T39V?tag=atbh-20' },
       { name: 'CurlyKids Super Detangle Spray (6 oz)', why: 'Makes combing out easier when you go from one style to the next.', url: 'https://www.amazon.com/dp/B00J222BFE?tag=atbh-20' }
     ]
   }
